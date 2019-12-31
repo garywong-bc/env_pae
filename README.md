@@ -3,7 +3,7 @@
 ```bash
 docker-compose exec drupal /bin/bash
 
-wait-for db:3306 -- /usr/bin/yes | /usr/local/bin/drush site-install standard install_configure_form.update_status_module='array(FALSE,FALSE)' --db-url=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}/${MYSQL_DATABASE} --account-name=${PAE_ADMIN_USER} --account-pass=${PAE_ADMIN_PASSWORD} --account-mail=${PAE_ADMIN_EMAIL} --site-name=${PAE_SITE_NAME} --site-mail=${PAE_ADMIN_EMAIL} -r /var/www/html
+wait-for db:3306 -- /usr/bin/yes | /usr/local/bin/drush site-install standard install_configure_form.update_status_module='array(FALSE,FALSE)' --db-url=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}/${MYSQL_DATABASE} --account-name=${DRUPAL_ADMIN_USER} --account-pass=${DRUPAL_ADMIN_PASSWORD} --account-mail=${DRUPAL_ADMIN_EMAIL} --site-name=${DRUPAL_SITE_NAME} --site-mail=${DRUPAL_ADMIN_EMAIL} -r /var/www/html
 
 cat <<\EOF >> /var/www/html/sites/default/settings.php
 $conf['file_temporary_path'] = '/tmp';
@@ -19,7 +19,7 @@ EOF
 
 mkdir -p /var/www/html/sites/default/files/private && \
 chown -R www-data:www-data /var/www/html/sites/default/files && \
-cp /tmp/private-htaccess /var/www/html/sites/default/files/private/.htacces
+cp /tmp/private-htaccess /var/www/html/sites/default/files/private/.htaccess
 ```
 
 ```
