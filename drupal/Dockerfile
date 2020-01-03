@@ -2,7 +2,7 @@ FROM drupal:7.67
 
 ADD https://raw.githubusercontent.com/eficode/wait-for/master/wait-for wait-for
 
-COPY ./private-htaccess ./settings.php ./PAE-2019-12-18T13-54-28.mysql /tmp/
+COPY ./files/private-htaccess ./files/PAE-2019-12-18T13-54-28.mysql /tmp/
 
 RUN apt-get update && apt-get install -y \
 	mysql-client \
