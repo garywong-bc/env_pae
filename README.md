@@ -3,9 +3,24 @@
 ```bash
 docker-compose exec drupal /bin/bash
 
-wait-for db:3306 -- /usr/bin/yes | /usr/local/bin/drush site-install standard install_configure_form.update_status_module='array(FALSE,FALSE)' --db-url=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}/${MYSQL_DATABASE} --account-name=${DRUPAL_ADMIN_USER} --account-pass=${DRUPAL_ADMIN_PASSWORD} --account-mail=${DRUPAL_ADMIN_EMAIL} --site-name=${DRUPAL_SITE_NAME} --site-mail=${DRUPAL_ADMIN_EMAIL} -r /var/www/html
+wait-for db:3306 -- /usr/bin/yes | /usr/local/bin/drush site-install standard install_configure_form.update_status_module='array(FALSE,FALSE)' --db-url=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}/${MYSQL_DATABASE} --account-name=${DRUPAL_ADMIN_USER} --account-pass=${DRUPAL_ADMIN_PASSWORD} --account-mail=${DRUPAL_ADMIN_EMAIL} --site-name=${DRUPAL_SITE_NAME} --site-mail=${DRUPAL_ADMIN_EMAIL} -r /var/www/html/pae
+
+drush vset maintenance_mode 1
+
+/usr/local/bin/drush -y make /tmp/pae-dlvr-file.make
+cd /var/www/html/sites/all/ && tar -xvf /tmp/pae-modules-themes.tar
+
+
+cd /var/www/html/
+mkdir -p /var/www/html/sites/default/files/private && \
+chown -R www-data:www-data /var/www/html/sites/default/files && \
+cp /tmp/private-htaccess /var/www/html/sites/default/files/private/.htaccess
+
+drush vset date_default_timezone 'America/Vancouver' -y
+drush vset date_first_day 1 -y
 
 cat <<\EOF >> /var/www/html/sites/default/settings.php
+$base_url = 'http://localhost/pae';
 $conf['file_temporary_path'] = '/tmp';
 $conf['file_public_path'] = 'sites/default/files';
 $conf['file_private_path'] = 'sites/default/files/private';
@@ -16,11 +31,26 @@ $conf['preprocess_css'] = '0';
 $conf['preprocess_js'] = '0';
 EOF
 
+drush sqlc < /tmp/PAEDelivery-2020-02-20T14-08-32.mysql  
 
-mkdir -p /var/www/html/sites/default/files/private && \
-chown -R www-data:www-data /var/www/html/sites/default/files && \
-cp /tmp/private-htaccess /var/www/html/sites/default/files/private/.htaccess
+drush en -y actions_permissions adminrole admin_menu adminimal_admin_menu \
+  ctools date date_api date_popup date_views devel devel_node_access \
+  migrate_extras features computed_field conditional_fields content_taxonomy flag flag_actions \
+  migrate_ixm_pae migrate migrate_ui autoload backup_migrate better_formats \
+  diff elements entity entity_token menu_attributes menu_breadcrumb \
+  pathauto profile2 strongarm terms_of_use token rules rules_scheduler rules_admin \
+  siteminder taxonomy_manager ckeditor jquery_update \
+  views views_bulk_operations views_data_export views_ui votingapi
+
+drush cc all 
+
+drush vset maintenance_mode 0
+
 ```
+
+
+
+
 
 ```
 drush vset maintenance_mode 1
@@ -353,3 +383,58 @@ root@af211303cf4f:/var/www/html# vi  sites/default/settings.php
 root@af211303cf4f:/var/www/html# drush cc all 
 'all' cache was cleared. 
 ```
+
+## Generate list of Modules in PAE D7 DLVR
+
+```bash
+[gtwong_a@enter default]$ drush generate-makefile /tmp/pae-dlvr-file.make
+No release history was found for the requested project (migrate_ixm_pae).            [warning]
+Some of the properties in your makefile will have to be manually edited. Please do   [warning]
+that now.
+Wrote .make file /tmp/pae-dlvr-file.make
+```
+
+But there are four custom modules that need to be untar'd
+
+```
+; Modules
+; Please fill the following out. Type may be one of get, git, bzr or svn,
+; and url is the url of the download.
+projects[deckfifty][download][type] = ""
+projects[deckfifty][download][url] = ""
+projects[deckfifty][type] = "module"
+
+; Please fill the following out. Type may be one of get, git, bzr or svn,
+; and url is the url of the download.
+projects[deckfifty_migrate][download][type] = ""
+projects[deckfifty_migrate][download][url] = ""
+projects[deckfifty_migrate][type] = "module"
+
+; Please fill the following out. Type may be one of get, git, bzr or svn,
+; and url is the url of the download.
+projects[extended_user_account][download][type] = ""
+projects[extended_user_account][download][url] = ""
+projects[extended_user_account][type] = "module"
+
+; Please fill the following out. Type may be one of get, git, bzr or svn,
+; and url is the url of the download.
+projects[siteminder][download][type] = ""
+projects[siteminder][download][url] = ""
+projects[siteminder][type] = "module"
+```
+So:
+```
+[gtwong_a@enter modules]$ pwd
+[gtwong_a@enter all]$ pwd
+/fs/u02/ofs/inetpub/ahte_pae_d/pae/sites/all
+
+[gtwong_a@enter all]$ tar --exclude=themes/adminimal_theme -cvf /tmp/pae-modules-themes.tar modules/custom/ themes/
+[gtwong_a@exit ~]$ scp enter:/tmp/pae-modules-themes.tar .
+
+
+
+
+
+
+IN drupal/files/pae-modules-themes.tar
+

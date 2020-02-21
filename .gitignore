@@ -41,3 +41,7 @@ app/sites/all/themes/README.txt
 
 *.mysql
 *.bkup
+
+.DS_Store
+*.tar
+*.gz
