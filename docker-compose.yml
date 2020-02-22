@@ -17,24 +17,25 @@ services:
         healthcheck:
             test: mysqladmin ping -h 127.0.0.1 -u $${MYSQL_USER} --password=$${MYSQL_PASSWORD}
 
-    adminer:
-        image: adminer
-        restart: always
+    web:
+        image: nginx:stable
         ports:
-            - 8080:8080
-        depends_on:
-            - db
-
-    drupal:
-        build: ./drupal
+        - "80:80"
+        volumes:
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+            - ./app/pae:/pae
+            - ./app/files:/pae/sites/default/files
+        environment:
+            - NGINX_HOST=localhost
+            - NGINX_PORT=80
+            - TZ=UTC
+    php:
+        image: php:7-fpm
         ports:
-            - 80:80
-        #volumes:
-        #      - ./drupal/modules:/var/www/html/modules
-        #      - ./drupal/profiles:/var/www/html/profiles
-        #      - ./drupal/themes:/var/www/html/themes
-        #      - ./drupal/sites:/var/www/html/sites
-        #    restart: always
+        - "9000:9000"        
+        volumes:
+            - ./app/pae:/pae
+            - ./app/files:/pae/sites/default/files
         environment:
             MYSQL_HOST: db
             MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -44,6 +45,7 @@ services:
             DRUPAL_ADMIN_USER: ${DRUPAL_ADMIN_USER}
             DRUPAL_ADMIN_PASSWORD: ${DRUPAL_ADMIN_PASSWORD}
             DRUPAL_ADMIN_EMAIL: ${DRUPAL_ADMIN_EMAIL}  
-            DRUPAL_SITE_NAME: ${DRUPAL_SITE_NAME}  
+            DRUPAL_SITE_NAME: ${DRUPAL_SITE_NAME}   
         depends_on:
+            - web
             - db

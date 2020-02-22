@@ -438,3 +438,33 @@ So:
 
 IN drupal/files/pae-modules-themes.tar
 
+
+
+# REDO
+
+Now that I have ssh access:
+
+From PROD
+[gtwong_a@exit ahte_pae]$ tar -cvf /tmp/pae-exit.20200221.tar pae/
+➜  files git:(master) ✗ scp exit:/tmp/pae-exit.20200221.tar 
+
+
+[gtwong_a@exit pae]$ tar -cvf /tmp/pae-exit.files.20200221.tar . 
+➜  files git:(master) ✗ scp exit:/tmp/pae-exit.files.20200221.tar . 
+
+
+On Docker
+
+
+drush vset maintenance_mode 1
+
+drush sqlc < /tmp/PAEDelivery-2020-02-20T14-08-32.mysql  
+
+# && drush @none dl utf8mb4_convert-7.x \
+# && drush cc drush \
+
+
+drush cc all 
+
+drush vset maintenance_mode 0
+
