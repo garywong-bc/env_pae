@@ -3,7 +3,7 @@
 ```bash
 docker-compose exec drupal /bin/bash
 
-wait-for db:3306 -- /usr/bin/yes | /usr/local/bin/drush site-install standard install_configure_form.update_status_module='array(FALSE,FALSE)' --db-url=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}/${MYSQL_DATABASE} --account-name=${DRUPAL_ADMIN_USER} --account-pass=${DRUPAL_ADMIN_PASSWORD} --account-mail=${DRUPAL_ADMIN_EMAIL} --site-name=${DRUPAL_SITE_NAME} --site-mail=${DRUPAL_ADMIN_EMAIL} -r /var/www/html/pae
+wait-for db:3306 -- /usr/bin/yes | /usr/local/bin/drush site-install standard install_configure_form.update_status_module='array(FALSE,FALSE)' --db-url=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}/${MYSQL_DATABASE} --account-name=${DRUPAL_ADMIN_USER} --account-pass=${DRUPAL_ADMIN_PASSWORD} --account-mail=${DRUPAL_ADMIN_EMAIL} --site-name=${DRUPAL_SITE_NAME} --site-mail=${DRUPAL_ADMIN_EMAIL} -r /var/www/html
 
 drush vset maintenance_mode 1
 
