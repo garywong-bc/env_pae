@@ -22,8 +22,9 @@ services:
         ports:
         - "9000:9000"        
         volumes:
-            - ./app/pae:/var/www/html/pae
-            - ./app/files:/var/www/html/pae/sites/default/files
+            - ./app/html:/var/www/html
+            - ./app/pae:/var/www/pae
+            - ./app/files:/var/www/pae/sites/default/files
         environment:
             MYSQL_HOST: db
             MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -41,9 +42,11 @@ services:
         ports:
         - "80:80"
         volumes:
-            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-            - ./app/pae:/var/www/html/pae
-            - ./app/files:/var/www/html/pae/sites/default/files
+#            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./app/html:/var/www/html
+            - ./app/pae:/var/www/pae
+            - ./app/files:/var/www/pae/sites/default/files
         environment:
             - NGINX_HOST=pae.test
             - NGINX_PORT=80

@@ -3,23 +3,23 @@
 ```bash
 docker-compose exec drupal /bin/bash
 
-wait-for db:3306 -- /usr/bin/yes | /usr/local/bin/drush site-install standard install_configure_form.update_status_module='array(FALSE,FALSE)' --db-url=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}/${MYSQL_DATABASE} --account-name=${DRUPAL_ADMIN_USER} --account-pass=${DRUPAL_ADMIN_PASSWORD} --account-mail=${DRUPAL_ADMIN_EMAIL} --site-name=${DRUPAL_SITE_NAME} --site-mail=${DRUPAL_ADMIN_EMAIL} -r /var/www/html
+wait-for db:3306 -- /usr/bin/yes | /usr/local/bin/drush site-install standard install_configure_form.update_status_module='array(FALSE,FALSE)' --db-url=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}/${MYSQL_DATABASE} --account-name=${DRUPAL_ADMIN_USER} --account-pass=${DRUPAL_ADMIN_PASSWORD} --account-mail=${DRUPAL_ADMIN_EMAIL} --site-name=${DRUPAL_SITE_NAME} --site-mail=${DRUPAL_ADMIN_EMAIL} -r /var/www/pae
 
 drush vset maintenance_mode 1
 
 /usr/local/bin/drush -y make /tmp/pae-dlvr-file.make
-cd /var/www/html/sites/all/ && tar -xvf /tmp/pae-modules-themes.tar
+cd /var/www/pae/sites/all/ && tar -xvf /tmp/pae-modules-themes.tar
 
 
-cd /var/www/html/
-mkdir -p /var/www/html/sites/default/files/private && \
-chown -R www-data:www-data /var/www/html/sites/default/files && \
-cp /tmp/private-htaccess /var/www/html/sites/default/files/private/.htaccess
+cd /var/www/pae/
+mkdir -p /var/www/pae/sites/default/files/private && \
+chown -R www-data:www-data /var/www/pae/sites/default/files && \
+cp /tmp/private-htaccess /var/www/pae/sites/default/files/private/.htaccess
 
 drush vset date_default_timezone 'America/Vancouver' -y
 drush vset date_first_day 1 -y
 
-cat <<\EOF >> /var/www/html/sites/default/settings.php
+cat <<\EOF >> /var/www/pae/sites/default/settings.php
 $base_url = 'http://localhost/pae';
 $conf['file_temporary_path'] = '/tmp';
 $conf['file_public_path'] = 'sites/default/files';
@@ -94,12 +94,12 @@ drush vset maintenance_mode 0
 ## Sample log (need to redo with enabled modules in place)
 
 ```
-root@af211303cf4f:/var/www/html# drush @none dl utf8mb4_convert-7.x
+root@af211303cf4f:/var/www/pae# drush @none dl utf8mb4_convert-7.x
 Project utf8mb4_convert (7.x-1.0) downloaded to /root/.drush/utf8mb4_convert.                                                                            [success]
 Project utf8mb4_convert contains 0 modules: .
-root@af211303cf4f:/var/www/html# drush cc drush 
+root@af211303cf4f:/var/www/pae# drush cc drush 
 'drush' cache was cleared.                                                                                                                               [success]
-root@af211303cf4f:/var/www/html# drush utf8mb4-convert-databases
+root@af211303cf4f:/var/www/pae# drush utf8mb4-convert-databases
 This will convert the following databases to utf8mb4: default
 Back up your databases before continuing! Continue? (y/n): y
 Target MySQL database: pae@db (default:default)
@@ -379,8 +379,8 @@ Converting field: watchdog.location
 Converting field: watchdog.referer
 Converting field: watchdog.hostname
 Finished converting the default:default MySQL database!
-root@af211303cf4f:/var/www/html# vi  sites/default/settings.php 
-root@af211303cf4f:/var/www/html# drush cc all 
+root@af211303cf4f:/var/www/pae# vi  sites/default/settings.php 
+root@af211303cf4f:/var/www/pae# drush cc all 
 'all' cache was cleared. 
 ```
 
