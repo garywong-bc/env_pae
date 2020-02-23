@@ -9,7 +9,8 @@ app/pae/cache/
 app/pae/files/
 !app/pae/files/.gitkeep
 app/pae/sites/*/files
-app/pae/sites/*/private
+app/files/private/backup_migrate/
+!app/pae/sites/*/private/.gitkeep
 
 # Ignore default text files
 app/pae/.htaccess
