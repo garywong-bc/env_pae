@@ -1,0 +1,25 @@
+[mysqld]
+explicit_defaults_for_timestamp = 1
+#default-time-zone = '+00:00'
+default-time-zone = '-07:00'
+
+max_allowed_packet=16M
+
+# POST or PRE utf8mb4 conversion
+innodb_large_prefix=true
+innodb_file_format=barracuda
+innodb_file_per_table=true
+innodb_file_format_max=barracuda
+
+# POST utf8mb4 conversion
+#
+#init-connect='SET NAMES utf8mb4'
+#collation_server=utf8mb4_unicode_ci
+#character_set_server=utf8mb4
+#skip-character-set-client-handshake
+
+#[client]
+#default-character-set = utf8mb4
+
+#[mysql]
+#default-character-set = utf8mb4
