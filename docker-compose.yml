@@ -37,6 +37,7 @@ services:
             DRUPAL_SITE_NAME: ${DRUPAL_SITE_NAME}   
         depends_on:
             - db
+            
     web:
         image: nginx:stable
         ports:

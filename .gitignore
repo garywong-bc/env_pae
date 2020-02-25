@@ -12,6 +12,9 @@ app/pae/sites/*/files
 app/files/private/backup_migrate/
 !app/pae/sites/*/private/.gitkeep
 
+# This one uses only ENV variables so no sensitive data
+# app/pae/sites/default/settings.php
+
 # Ignore default text files
 app/pae/.htaccess
 app/pae/robots.txt
